@@ -1,0 +1,82 @@
+@baseUrl = http://localhost:5000
+
+### 1. Список студентов
+GET {{baseUrl}}/api/students
+
+### 2. Создать студента -> 201
+POST {{baseUrl}}/api/students
+Content-Type: application/json
+
+{ "firstName": "Alex", "lastName": "Johnson", "email": "alex.johnson@example.com", "birthDate": "2004-05-10" }
+
+### 3. Получить по ID (подставьте ID из шага 2)
+GET {{baseUrl}}/api/students/6
+
+### 4. Изменить студента -> 200
+PUT {{baseUrl}}/api/students/6
+Content-Type: application/json
+
+{ "firstName": "Alex", "lastName": "Johnson-Smith", "email": "alex.johnson@example.com", "birthDate": "2004-05-10" }
+
+### 5. Создать преподавателя -> 201
+POST {{baseUrl}}/api/teachers
+Content-Type: application/json
+
+{ "firstName": "Aidar", "lastName": "Bekov", "email": "a.bekov@satbayev.university", "department": "Computer Science" }
+
+### 6. Создать курс и привязать преподавателя -> 201
+POST {{baseUrl}}/api/courses
+Content-Type: application/json
+
+{ "name": "Cloud Computing", "description": "Intro to cloud", "credits": 4, "teacherId": 4 }
+
+### 7. Записать студента на курс -> 201
+POST {{baseUrl}}/api/enrollments
+Content-Type: application/json
+
+{ "studentId": 6, "courseId": 5 }
+
+### 8. Повторная запись -> 409 ALREADY_ENROLLED
+POST {{baseUrl}}/api/enrollments
+Content-Type: application/json
+
+{ "studentId": 6, "courseId": 5 }
+
+### 9. Студент вместе с курсами
+GET {{baseUrl}}/api/students/6/courses
+
+### 10. Фильтрация курсов
+GET {{baseUrl}}/api/courses?name=data&minCredits=3&maxCredits=5
+
+### 11. Изменить оценку -> 200
+PUT {{baseUrl}}/api/enrollments/7/grade
+Content-Type: application/json
+
+{ "grade": 95 }
+
+### 12. Удалить студента с курса -> 200
+DELETE {{baseUrl}}/api/enrollments/7
+
+### 13. Несуществующий объект -> 404
+GET {{baseUrl}}/api/students/9999
+
+### 14. Ошибка валидации -> 400
+POST {{baseUrl}}/api/students
+Content-Type: application/json
+
+{ "firstName": "", "lastName": "Test", "email": "not-an-email", "birthDate": "2004-05-10" }
+
+### 15. Запись на несуществующий курс -> 404 COURSE_NOT_FOUND
+POST {{baseUrl}}/api/enrollments
+Content-Type: application/json
+
+{ "studentId": 1, "courseId": 9999 }
+
+### 16. Курс с несуществующим преподавателем -> 404 TEACHER_NOT_FOUND
+POST {{baseUrl}}/api/courses
+Content-Type: application/json
+
+{ "name": "Ghost course", "credits": 3, "teacherId": 9999 }
+
+### 17. Непредвиденная ошибка -> 500 без stack trace
+GET {{baseUrl}}/api/diagnostics/error
